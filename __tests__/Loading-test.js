@@ -9,6 +9,6 @@ import Loading from '../app/components/Loading';
 // Note: test renderer must be required after react-native.
 import renderer from 'react-test-renderer';
 
-it('renders loading', () => {
+it('renders loading component', () => {
   renderer.create(<Loading />);
 });

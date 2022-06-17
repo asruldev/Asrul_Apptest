@@ -14,9 +14,10 @@ import {fetchContact, setLoading, setError} from '../redux/contact';
 import {API_URL} from '../constants/index';
 import {useNavigation} from '@react-navigation/native';
 import Loading from '../components/Loading';
+import { Toast } from '../components/Toast';
 
 export function HomeScreen() {
-  const {list, loading, error} = useSelector(state => state.contact);
+  const {list, loading} = useSelector(state => state.contact);
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
@@ -24,7 +25,6 @@ export function HomeScreen() {
     dispatch(setLoading());
     try {
       const {data} = await axios(API_URL + '/contact');
-      console.log(JSON.stringify(data.data));
       dispatch(fetchContact(data.data));
     } catch (error) {
       dispatch(setError(error));
@@ -32,6 +32,21 @@ export function HomeScreen() {
       dispatch(setLoading());
     }
   };
+
+  const deleteContact = async (id) => {
+    dispatch(setLoading());
+    console.log("newContact", id)
+
+    try {
+      await axios.delete(API_URL + '/contact/' + id);
+      const newContact = list.filter(item => item.id !== id)
+      dispatch(fetchContact(newContact));
+    } catch (error) {
+      Toast(error.response.data.message)
+    } finally {
+      dispatch(setLoading());
+    }
+  }
 
   useEffect(() => {
     fetchContactData();
@@ -73,7 +88,7 @@ export function HomeScreen() {
               style={{
                 flex: 1,
               }}
-              onPress={() => {console.log(item.id)}
+              onPress={() => {deleteContact(item.id)}
               }>
                 <Text style={{color: 'pink'}}>Delete</Text>
               </TouchableOpacity>

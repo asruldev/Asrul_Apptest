@@ -4,13 +4,13 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
 import {API_URL} from '../constants/index';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import { Toast } from '../components/Toast';
 
 export function FormScreen() {
   const {params} = useRoute();
@@ -28,10 +28,6 @@ export function FormScreen() {
   }, [params]);
 
   const navigation = useNavigation();
-  const showToast = (message) => {
-    ToastAndroid.show(message, ToastAndroid.SHORT);
-  };
-
 
   const submitData = async () => {
     setLoading(true)
@@ -45,8 +41,8 @@ export function FormScreen() {
       });
       navigation.replace('Home')
     } catch (error) {
-      if(error.response.data.statusCode >= 400) showToast("Error " + error.response.data.message);
-      else showToast("Success submit contact")
+      if(error.response.data.statusCode >= 400) Toast("Error " + error.response.data.message);
+      else Toast("Success submit contact")
     } finally {
       setLoading(false)
     }
